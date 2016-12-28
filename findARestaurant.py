@@ -25,8 +25,15 @@ def findARestaurant(mealType,location):
                 }
     responseObject = requests.get(url, params=payload)
     parsedResponse = json.loads(responseObject.text)
-    foundRestaurant = parsedResponse['response']['venues'][0]['name']
-    return foundRestaurant
+    foundRestaurant = parsedResponse['response']['venues'][0]
+    venue_name = foundRestaurant['name']
+    venue_address = foundRestaurant['location']['formattedAddress'][0]
+    venue_id = foundRestaurant['id']
+
+    photo_url = 'https://api.foursquare.com/v2/venues/'
+    photoResponseObject = requests.get(url+venue_id+'/photos')
+    return venue_name,venue_address,venue_id
+
     # latitude = parsedResponse['results'][0]['geometry']['location']['lat']
     # longitude = parsedResponse['results'][0]['geometry']['location']['lng']
     # return (latitude, longitude)
