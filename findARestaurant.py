@@ -31,8 +31,19 @@ def findARestaurant(mealType,location):
     venue_id = foundRestaurant['id']
 
     photo_url = 'https://api.foursquare.com/v2/venues/'
-    photoResponseObject = requests.get(url+venue_id+'/photos')
-    return venue_name,venue_address,venue_id
+    photo_payload = {
+                'client_id': foursquare_client_id,
+                'client_secret': foursquare_client_secret,
+                'v': '20151010'
+                }
+    photoResponseObject = requests.get(photo_url+venue_id+'/photos?', params=photo_payload)
+    parsedPhotoResponse = json.loads(photoResponseObject.text)
+    photo = parsedPhotoResponse['response']['photos']['items'][0]
+    photo_prefix = photo['prefix']
+    photo_size = '300x300'
+    photo_suffix = photo['suffix']
+    photo_url = photo_prefix+photo_size+photo_suffix
+    print venue_name+'\n'+venue_address+'\n',venue_id+'\n',photo_url+'\n'
 
     # latitude = parsedResponse['results'][0]['geometry']['location']['lat']
     # longitude = parsedResponse['results'][0]['geometry']['location']['lng']
@@ -61,4 +72,4 @@ def findARestaurant(mealType,location):
 #     findARestaurant("Steak", "La Paz, Bolivia")
 #     findARestaurant("Gyros", "Sydney Australia")
 
-print(findARestaurant("sushi","Sydney"))
+findARestaurant("sushi","Sydney")
