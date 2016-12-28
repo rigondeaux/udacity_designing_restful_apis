@@ -29,13 +29,12 @@ def findARestaurant(mealType,location):
     venue_id = foundRestaurant['id']
 
     # retrieve photo of restaurant
-    print 'RETRIEVING PHOTO FOR ID: '+venue_id
     photo_url = 'https://api.foursquare.com/v2/venues/'
     photo_payload = {
-                'client_id': foursquare_client_id,
-                'client_secret': foursquare_client_secret,
-                'v': version
-                }
+        'client_id': foursquare_client_id,
+        'client_secret': foursquare_client_secret,
+        'v': version,
+    }
     photoResponseObject = requests.get(photo_url+venue_id+'/photos?', params=photo_payload)
     parsedPhotoResponse = json.loads(photoResponseObject.text)
     photo_url ='NO PHOTO AVAILABLE'
@@ -46,8 +45,16 @@ def findARestaurant(mealType,location):
         photo_suffix = photo['suffix']
         photo_url = photo_prefix+photo_size+photo_suffix
 
-    print venue_name+'\n'+venue_address+'\n'+photo_url+'\n'
-
+    restaurant_info = {
+        'name': venue_name,
+        'address': venue_address,
+        'photo': photo_url,
+    }
+    print restaurant_info['name']
+    print restaurant_info['address']
+    print restaurant_info['photo']
+    print '\n'
+    return restaurant_info
 	#1. Use getGeocodeLocation to get the latitude and longitude coordinates of the location string.
 
 	#2.  Use foursquare API to find a nearby restaurant with the latitude, longitude, and mealType strings.
