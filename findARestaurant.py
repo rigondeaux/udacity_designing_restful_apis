@@ -25,8 +25,8 @@ def findARestaurant(mealType,location):
                 }
     responseObject = requests.get(url, params=payload)
     parsedResponse = json.loads(responseObject.text)
-    print responseObject.url
-    return parsedResponse
+    foundRestaurant = parsedResponse['response']['venues'][0]['name']
+    return foundRestaurant
     # latitude = parsedResponse['results'][0]['geometry']['location']['lat']
     # longitude = parsedResponse['results'][0]['geometry']['location']['lng']
     # return (latitude, longitude)
