@@ -15,45 +15,38 @@ version = '20151010'
 url = 'https://api.foursquare.com/v2/venues/search?'
 
 def findARestaurant(mealType,location):
+    # find restaurant in given latitude/longitude
     latitude, longitude = getGeocodeLocation(location)
     url = ('https://api.foursquare.com/v2/venues/search?client_id=%s&client_secret=%s&query=%s&ll=%s,%s&v=%s'
         % (foursquare_client_id,foursquare_client_secret,mealType,latitude,longitude,version))
-    # payload = {
-    #             'client_id': foursquare_client_id,
-    #             'client_secret': foursquare_client_secret,
-    #             'll': latitude,longitude,
-    #             'query': mealType,
-    #             'v': '20151010',
-    #             }
     responseObject = requests.get(url)
-    print responseObject.url
-
-'''
     parsedResponse = json.loads(responseObject.text)
+
+    # retrieve venue name and address of first restaurant in list
     foundRestaurant = parsedResponse['response']['venues'][0]
     venue_name = foundRestaurant['name']
     venue_address = foundRestaurant['location']['formattedAddress'][0]
     venue_id = foundRestaurant['id']
 
+    # retrieve photo of restaurant
+    print 'RETRIEVING PHOTO FOR ID: '+venue_id
     photo_url = 'https://api.foursquare.com/v2/venues/'
     photo_payload = {
                 'client_id': foursquare_client_id,
                 'client_secret': foursquare_client_secret,
-                'v': '20151010'
+                'v': version
                 }
     photoResponseObject = requests.get(photo_url+venue_id+'/photos?', params=photo_payload)
     parsedPhotoResponse = json.loads(photoResponseObject.text)
-    photo = parsedPhotoResponse['response']['photos']['items'][0]
-    photo_prefix = photo['prefix']
-    photo_size = '300x300'
-    photo_suffix = photo['suffix']
-    photo_url = photo_prefix+photo_size+photo_suffix
-    print venue_name+'\n'+venue_address+'\n',venue_id+'\n',photo_url+'\n'
-    '''
+    photo_url ='NO PHOTO AVAILABLE'
+    if parsedPhotoResponse['response']['photos']['items']:
+        photo = parsedPhotoResponse['response']['photos']['items'][0]
+        photo_prefix = photo['prefix']
+        photo_size = '300x300'
+        photo_suffix = photo['suffix']
+        photo_url = photo_prefix+photo_size+photo_suffix
 
-    # latitude = parsedResponse['results'][0]['geometry']['location']['lat']
-    # longitude = parsedResponse['results'][0]['geometry']['location']['lng']
-    # return (latitude, longitude)
+    print venue_name+'\n'+venue_address+'\n'+photo_url+'\n'
 
 	#1. Use getGeocodeLocation to get the latitude and longitude coordinates of the location string.
 
@@ -66,14 +59,13 @@ def findARestaurant(mealType,location):
 	#6. If no image is available, insert default a image url
 	#7. Return a dictionary containing the restaurant name, address, and image url
 
-
 if __name__ == '__main__':
     findARestaurant("Pizza", "Tokyo, Japan")
-    # findARestaurant("Tacos", "Jakarta, Indonesia")
-    # findARestaurant("Tapas", "Maputo, Mozambique")
-    # findARestaurant("Falafel", "Cairo, Egypt")
-    # findARestaurant("Spaghetti", "New Delhi, India")
-    # findARestaurant("Cappuccino", "Geneva, Switzerland")
-    # findARestaurant("Sushi", "Los Angeles, California")
-    # findARestaurant("Steak", "La Paz, Bolivia")
-    # findARestaurant("Gyros", "Sydney Australia")
+    findARestaurant("Tacos", "Jakarta, Indonesia")
+    findARestaurant("Tapas", "Maputo, Mozambique")
+    findARestaurant("Falafel", "Cairo, Egypt")
+    findARestaurant("Spaghetti", "New Delhi, India")
+    findARestaurant("Cappuccino", "Geneva, Switzerland")
+    findARestaurant("Sushi", "Los Angeles, California")
+    findARestaurant("Steak", "La Paz, Bolivia")
+    findARestaurant("Gyros", "Sydney Australia")
